@@ -1,4 +1,4 @@
-name: Agnostic-Blueprint
+name: Batatinha-Blueprint
 version: 1
 resources:
   Cloud_Machine_1:
@@ -13,3 +13,27 @@ resources:
     properties:
       name: public
       networkType: existing
+      
+      inputs: {}
+resources:
+  centos:
+    type: Cloud.Machine
+    forceRecreate: true
+    properties:
+      image: Ubuntu
+      flavor: small
+      remoteAccess:
+        authentication: generatedPublicPrivateKey
+  puppet_1:
+    type: Cloud.Puppet
+    properties:
+      host: '${resource.ubun.*}'
+      role: 'role::linux_webserver'
+      osType: linux
+      provider: PEMasterAWS
+      username: centos
+      environment: production
+      useSudo: true
+      agentConfiguration:
+        certName: '${ubuntu.address}'
+        runInterval: 30m
